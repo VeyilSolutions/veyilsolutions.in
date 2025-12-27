@@ -33,9 +33,11 @@ This website serves as the central hub for Veyil Solutions. It showcases our ser
     ├── terms_and_conditions.html # Legal Page
     ├── how_we_work.html          # Process Page
     ├── cookies_policy.html       # Legal Page
+    ├── robots.txt                # robots file
+    ├── siemap.xml                # XML file
     ├── img/                      # Image Assets
     │   ├── logo.png              # Logo
-    │   ├── hero.png             # Hero Image
+    │   ├── hero.png              # Hero Image
     │   ├── image.png             # Cover image
     │   └── favicon.png           # Site Favicon
     └── README.md                 # Project Documentation
