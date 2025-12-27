@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://veyilsolutions.github.io/veyilsolutions.in/sitemap.xml
