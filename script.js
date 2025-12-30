@@ -47,6 +47,7 @@ function showToast(message, type = 'success') {
 
 /**
  * Toggles the "Other" text area in the contact form
+ * FIXED: Removed duplicate function and ensured clean display logic
  */
 function toggleOtherField() {
     const dropdown = document.getElementById("service_type");
@@ -55,11 +56,16 @@ function toggleOtherField() {
 
     if (dropdown && otherField && otherInput) {
         if (dropdown.value === "other") {
-            otherField.style.display = "flex";
+            // Show the field
+            otherField.style.display = "block";
+            // Make it required so they don't submit it empty
             otherInput.setAttribute("required", "true");
         } else {
+            // Hide the field
             otherField.style.display = "none";
+            // Remove required so they can submit the form without it
             otherInput.removeAttribute("required");
+            // Clear the text if they switch away
             otherInput.value = "";
         }
     }
@@ -206,10 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 textElement.textContent = messages[currentIndex];
                 textElement.style.transition = 'none';
                 textElement.style.transform = 'translateX(50px)';
-                
+
                 // Trigger reflow
                 void textElement.offsetWidth;
-                
+
                 textElement.style.transition = 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out';
                 textElement.style.transform = 'translateX(0)';
                 textElement.style.opacity = '1';
@@ -255,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
                 // Stop observing once animated
-                observer.unobserve(entry.target); 
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
@@ -272,43 +278,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- H. Contact Form Handling ---
+    // FIXED: Updated to use FormData to automatically capture all HTML inputs
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const formData = {
-                name: document.getElementById('name').value,
-                WhatsApp: document.getElementById('WhatsApp').value,
-                email: document.getElementById('email').value,
-                service_type: document.getElementById('service_type').value,
-                other_details: document.getElementById('other_details') ? document.getElementById('other_details').value : ''
-            };
-
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerHTML;
+
+            // Show Loading State
             submitBtn.innerHTML = 'Sending...';
             submitBtn.disabled = true;
 
             try {
+                // Automatically grab ALL fields from the form
+                const formData = new FormData(contactForm);
+
                 const response = await fetch('https://formspree.io/f/xwveaakn', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 });
 
                 if (response.ok) {
                     showToast("Message sent successfully! We'll get back to you soon.", "success");
                     contactForm.reset();
+                    // Hide the "Other" field after successful reset
                     const otherField = document.getElementById("other_field_container");
                     if (otherField) otherField.style.display = "none";
                 } else {
-                    showToast("Failed to send message. Please try again later.", "error");
+                    const data = await response.json();
+                    if (Object.hasOwn(data, 'errors')) {
+                        showToast(data["errors"].map(error => error["message"]).join(", "), "error");
+                    } else {
+                        showToast("Failed to send message. Please try again later.", "error");
+                    }
                 }
             } catch (error) {
                 console.error("Form submission error:", error);
-                showToast("An error occurred. Please try again later.", "error");
+                showToast("An error occurred. Check your internet connection.", "error");
             } finally {
+                // Restore Button
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
             }
@@ -342,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => {
         let current = '';
-        
+
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             // 150 is a buffer to trigger the highlight slightly before the section hits the very top
