@@ -1693,7 +1693,6 @@ dotlottie-wc {
 .form-group select:focus, 
 .form-group textarea:focus {
     border-color: var(--gold) !important;
-    /* This creates a soft gold halo around the box when you click it */
     box-shadow: 0 0 0 4px rgba(244, 196, 48, 0.2); 
     outline: none;
 }
