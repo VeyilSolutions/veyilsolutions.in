@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Automatically grab ALL fields from the form
                 const formData = new FormData(contactForm);
 
-                const response = await fetch('https://formspree.io/f/xzdzrvng', {
+                const response = await fetch('https://formspree.io/f/mbdlozlk', {
                     method: 'POST',
                     body: formData,
                     headers: {
