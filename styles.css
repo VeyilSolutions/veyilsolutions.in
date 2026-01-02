@@ -1697,3 +1697,14 @@ dotlottie-wc {
     box-shadow: 0 0 0 4px rgba(244, 196, 48, 0.2); 
     outline: none;
 }
+/*-------------------------------------------------------------------------------------*/
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), #38bdf8);
+  z-index: 9999;
+  transition: width 0.15s ease-out;
+}
